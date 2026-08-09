@@ -1,0 +1,212 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Écran d'accueil Overlay */
+.overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    text-align: center;
+}
+
+.intro-box p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    margin: 8px 0;
+}
+
+.game-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    margin: 25px 0;
+}
+
+.game-title::before { content: "【 "; }
+.game-title::after { content: " 】"; }
+
+#btn-start {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: 0.3s;
+}
+
+#btn-start:hover {
+    background: #333333;
+}
+
+/* Application principale */
+.main-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+.card-badge {
+    font-size: 1.8rem;
+    font-weight: bold;
+    border: 2px solid #000;
+    padding: 2px 10px;
+}
+
+.game-info {
+    text-align: right;
+}
+
+.manche-tag {
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+.score-board {
+    font-size: 1.1rem;
+    margin-top: 5px;
+}
+
+/* Zone d'Annonce */
+.announcement-box {
+    border: 1px solid #000;
+    padding: 15px;
+    text-align: center;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fafafa;
+}
+
+/* Conteneur des Boîtes */
+.boxes-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.box {
+    flex: 1;
+    height: 120px;
+    border: 2px solid #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.box-status {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+.box.win {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.box.lose {
+    background-color: #d9534f;
+    color: #ffffff;
+    border-color: #d9534f;
+}
+
+/* Panneau d'Actions */
+.control-panel {
+    border: 1px solid #000;
+    padding: 15px;
+    text-align: center;
+}
+
+.panel-section p {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-action {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: 0.2s;
+}
+
+.btn-action:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.btn-main {
+    background: #000;
+    color: #fff;
+    width: 100%;
+    padding: 12px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Historique */
+.log-box {
+    border: 1px dashed #000;
+    padding: 12px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.log-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
