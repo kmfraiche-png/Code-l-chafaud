@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Code de l'Échafaud</title>
+  <style>
+    :root {
+      --bg: #0a0d0f;
+      --panel: #12181c;
+      --border: #1e2930;
+      --text: #e1e7ed;
+      --green: #2ecc71;
+      --yellow: #f1c40f;
+      --red: #e74c3c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Overlay Gaz mortel */
+    .gas-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to top, rgba(46, 204, 113, 0.4), transparent);
+      z-index: 1;
+      transition: height 0.5s ease;
+      pointer-events: none;
+    }
+
+    /* Modal des Règles */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--panel);
+      border: 2px solid var(--red);
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 380px;
+      text-align: left;
+    }
+
+    .modal-content h2 {
+      color: var(--red);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px var(--red);
+    }
+
+    .modal-content p, .modal-content ul {
+      font-size: 0.85rem;
+      color: #a0a0a0;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .modal-content ul { list-style: none; padding-left: 0; }
+    .modal-content li { margin-bottom: 6px; }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: var(--panel);
+      border: 2px solid var(--border);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      z-index: 2;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 5px var(--red);
+    }
+
+    .attempts-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .row { display: flex; justify-content: center; gap: 8px; }
+
+    .cell {
+      width: 45px;
+      height: 45px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 4px;
+    }
+
+    .cell.correct { background: var(--green); color: #000; border-color: var(--green); }
+    .cell.present { background: var(--yellow); color: #000; border-color: var(--yellow); }
+    .cell.absent { background: #2c3e50; color: #7f8c8d; border-color: #2c3e50; }
+
+    .input-section { display: flex; gap: 10px; flex-direction: column; }
+
+    input {
+      background: #000;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: 3px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input:focus { border-color: var(--green); }
+
+    button {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      text-transform: uppercase;
+      transition: 0.2s;
+    }
+
+    button.whatsapp-btn {
+      background: #25D366;
+      color: #000;
+      margin-top: 10px;
+    }
+
+    button:hover { opacity: 0.9; transform: scale(1.01); }
+
+    .status-msg {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Balise audio pour la musique de fond -->
+  <audio id="background-music" loop>
+    <source src="Alice In Borderland 2 Climax Music _ SoundTrack (160k).mp3" type="audio/mpeg">
+    Votre navigateur ne supporte pas la balise audio.
+  </audio>
+
+  <!-- Écran des Règles -->
+  <div class="modal" id="rules-modal">
+    <div class="modal-content">
+      <h2>Le Code de l'Échafaud</h2>
+      <p>Un joueur est enfermé dans une pièce se remplissant de gaz mortel. L'autre possède la clé.</p>
+      <ul>
+        <li>🟢 : Lettre bonne et bien placée.</li>
+        <li>🟡 : Lettre dans le mot, mais mal placée.</li>
+        <li>🔴 : Lettre absente du mot.</li>
+      </ul>
+      <p><b>Règles :</b> 5 essais maximum. Si le joueur trouve : <b>+3 Pts</b>. S'il échoue : <b>+3 Pts pour le Maître</b>.</p>
+      <button onclick="closeRules()" style="width:100%;">J'ai compris // Jouer</button>
+    </div>
+  </div>
+
+  <div class="gas-overlay" id="gas"></div>
+
+  <div class="container">
+    <h1>Échafaud // Vol.1</h1>
+
+    <!-- Phase Maître : Création du défi -->
+    <div id="master-phase" class="input-section">
+      <p style="font-size: 0.85rem; color: #a0a0a0;">[MAÎTRE DU JEU]<br>Entrez le mot secret (4 lettres) :</p>
+      <input type="password" id="secret-input" maxlength="4" placeholder="____">
+      <button onclick="generateChallenge()">Créer le Défi</button>
+      <div id="share-area" style="display:none;">
+        <button class="whatsapp-btn" onclick="shareOnWhatsapp()" style="width:100%;">Défier sur WhatsApp 📱</button>
+      </div>
+    </div>
+
+    <!-- Phase Joueur : Résolution -->
+    <div id="player-phase" style="display: none;">
+      <div class="attempts-grid" id="grid"></div>
+      <div class="input-section" id="controls">
+        <input type="text" id="guess-input" maxlength="4" placeholder="MOT?">
+        <button onclick="makeGuess()">Tester le mot</button>
+      </div>
+    </div>
+
+    <div class="status-msg" id="status"></div>
+  </div>
+
+  <script>
+    // Lancement de la musique d'ambiance au premier clic
+    document.addEventListener('click', function() {
+      const music = document.getElementById('background-music');
+      if (music && music.paused) {
+        music.play().catch(error => console.log("Lecture bloquée :", error));
+      }
+    }, { once: true });
+
+    // Bruitages synthétisés
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'click') {
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+      } else if (type === 'win') {
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'lose') {
+        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+      }
+    }
+
+    let secretWord = "";
+    let currentAttempt = 0;
+    const maxAttempts = 5;
+    let challengeUrl = "";
+
+    function closeRules() {
+      document.getElementById('rules-modal').style.display = 'none';
+      checkUrlForChallenge();
+    }
+
+    // Encoder / Décoder le mot secret dans le lien (Base64 simple)
+    function generateChallenge() {
+      const input = document.getElementById('secret-input');
+      const val = input.value.trim().toUpperCase();
+
+      if (val.length !== 4 || !/^[A-Z]+$/.test(val)) {
+        alert("Entrez un mot valide de 4 lettres !");
+        return;
+      }
+
+      playSound('click');
+      const encoded = btoa(val);
+      challengeUrl = window.location.href.split('?')[0] + '?code=' + encoded;
+      document.getElementById('share-area').style.display = 'block';
+      document.getElementById('status').innerText = "Défi prêt ! Cliquez sur le bouton WhatsApp pour l'envoyer.";
+    }
+
+    function shareOnWhatsapp() {
+      const text = encodeURIComponent(`☣️ *LE CODE DE L'ÉCHAFAUD* ☣️\n\nJe t'ai enfermé dans la pièce. Tu as 5 essais pour deviner mon mot de 4 lettres avant de t'asphyxier !\n\nClique ici pour jouer : ${challengeUrl}`);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    function checkUrlForChallenge() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+
+      if (code) {
+        try {
+          secretWord = atob(code);
+          document.getElementById('master-phase').style.display = 'none';
+          document.getElementById('player-phase').style.display = 'block';
+          document.getElementById('status').innerText = "Gaz activé. 5 essais restants !";
+          initGrid();
+        } catch(e) {
+          console.error("Lien invalide");
+        }
+      }
+    }
+
+    function initGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      for (let i = 0; i < maxAttempts; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        for (let j = 0; j < 4; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.id = `cell-${i}-${j}`;
+          row.appendChild(cell);
+        }
+        grid.appendChild(row);
+      }
+    }
+
+    function makeGuess() {
+      const input = document.getElementById('guess-input');
+      const guess = input.value.trim().toUpperCase();
+
+      if (guess.length !== 4 || !/^[A-Z]+$/.test(guess)) {
+        document.getElementById('status').innerText = "Entrez 4 lettres !";
+        return;
+      }
+
+      playSound('click');
+      evaluateGuess(guess);
+      input.value = '';
+    }
+
+    function evaluateGuess(guess) {
+      let secretArr = secretWord.split('');
+      let guessArr = guess.split('');
+      let result = Array(4).fill('absent');
+
+      for (let i = 0; i < 4; i++) {
+        if (guessArr[i] === secretArr[i]) {
+          result[i] = 'correct';
+          secretArr[i] = null;
+        }
+      }
+
+      for (let i = 0; i < 4; i++) {
+        if (result[i] !== 'correct' && secretArr.includes(guessArr[i])) {
+          result[i] = 'present';
+          secretArr[secretArr.indexOf(guessArr[i])] = null;
+        }
+      }
+
+      for (let j = 0; j < 4; j++) {
+        const cell = document.getElementById(`cell-${currentAttempt}-${j}`);
+        cell.innerText = guessArr[j];
+        cell.classList.add(result[j]);
+      }
+
+      currentAttempt++;
+      document.getElementById('gas').style.height = `${(currentAttempt / maxAttempts) * 100}%`;
+
+      if (guess === secretWord) {
+        playSound('win');
+        document.getElementById('controls').style.display = 'none';
+        document.getElementById('status').innerHTML = "<b style='color:var(--green)'>GAME CLEAR ! Tu as survécu (+3 Pts)</b>";
+      } else if (currentAttempt >= maxAttempts) {
+        playSound('lose');
+        document.getElementById('controls').style.display = 'none';
+        document.getElementById('status').innerHTML = `<b style='color:var(--red)'>GAME OVER ! Asphyxié. Le mot était ${secretWord} (+3 Pts Maître)</b>`;
+      } else {
+        document.getElementById('status').innerText = `Essais restants : ${maxAttempts - currentAttempt}`;
+      }
+    }
+  </script>
+</body>
+</html>
