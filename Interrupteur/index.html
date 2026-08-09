@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Interrupteurs - Alice in Borderland</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Écran d'accueil -->
+    <div id="start-overlay" class="overlay">
+        <div class="intro-box">
+            <p class="fade-line">BIENVENUE</p>
+            <p class="fade-line">LE JEU POUR TOUS</p>
+            <p class="fade-line">VA BIENTÔT COMMENCER...</p>
+            <h1 class="fade-line game-title">LES INTERRUPTEURS</h1>
+            <button id="btn-start">ENTRER DANS LE JEU</button>
+        </div>
+    </div>
+
+    <!-- Modal des Règles -->
+    <div id="rules-modal" class="overlay hidden">
+        <div class="rules-box">
+            <h2>RÈGLES DU JEU</h2>
+            <div class="rules-content">
+                <p>1. L'organisateur choisit secrètement la boîte connectée à l'ampoule (A, B ou C).</p>
+                <p>2. L'organisateur partage le lien de la partie au joueur via WhatsApp.</p>
+                <p>3. Le joueur fait son choix parmi les 3 boîtes.</p>
+                <p>4. Un mauvais choix entraîne un <strong>GAME OVER</strong> immédiat.</p>
+            </div>
+            <button id="btn-rules-ok">J'AI COMPRIS</button>
+        </div>
+    </div>
+
+    <!-- Conteneur Principal du Jeu -->
+    <div class="game-container hidden" id="game-container">
+        
+        <!-- Audio -->
+        <audio id="bg-music" src="Alice In Borderland 2 Click Clack scene music.mp3" loop></audio>
+
+        <!-- Vue Organisateur -->
+        <div id="organizer-view">
+            <h2>MODE ORGANISATEUR</h2>
+            <p>Sélectionnez la boîte connectée à l'ampoule :</p>
+            <div class="box-selection">
+                <button class="box-select-btn" onclick="selectCorrectBox('A')">Boîte A</button>
+                <button class="box-select-btn" onclick="selectCorrectBox('B')">Boîte B</button>
+                <button class="box-select-btn" onclick="selectCorrectBox('C')">Boîte C</button>
+            </div>
+
+            <div id="whatsapp-section" class="hidden">
+                <p>Boîte <span id="selected-box-label"></span> sélectionnée !</p>
+                <button id="btn-whatsapp" class="whatsapp-btn">Envoyer au Joueur sur WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- Vue Joueur -->
+        <div id="player-view" class="hidden">
+            <h2>À VOUS DE JOUER</h2>
+            <p>Choisissez la bonne boîte pour survivre :</p>
+
+            <div class="boxes-container">
+                <button class="game-box" onclick="playerChooseBox('A')">BOÎTE A</button>
+                <button class="game-box" onclick="playerChooseBox('B')">BOÎTE B</button>
+                <button class="game-box" onclick="playerChooseBox('C')">BOÎTE C</button>
+            </div>
+
+            <!-- Écran de Résultat -->
+            <div id="result-screen" class="hidden">
+                <h1 id="result-message"></h1>
+                <button onclick="location.reload()">Recommencer</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
